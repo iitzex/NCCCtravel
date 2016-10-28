@@ -23,27 +23,18 @@ class Store(Base):
         return "%s, %s, %s" % (self.name, self.phone, self.address)
 
 
-def add():
+def init():
     engine = create_engine('sqlite:///nccc.db', echo=True)
-    # print(engine)
-
-    f = Store(name='181泰美食', phone='02-24272929', address='基隆市仁愛區 仁三路５３號')
-    # print(f)
-
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    session.add(f)
-    session.commit()
+    Base.metadata.create_all(engine)
+    print(engine)
 
 
 def test():
     engine = create_engine('sqlite:///nccc.db', echo=True)
-    Base.metadata.create_all(engine)
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     al = session.query(Store).all()
     print(al)
-    add()
     # a = Store(name='aa', phone='0x', address='')
     # b = Store(name='bb', phone='0x', address='')
     # session.add(a)
@@ -57,5 +48,5 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    init()
 
