@@ -48,7 +48,7 @@ def traverse(addr, map_nccc, session):
 
         print(i+1, name, phone, city, town, address, main, sub)
 
-        res = session.query(Store).filter_by(address=address).first()
+        res = session.query(Store).filter_by(name=name, address=address).first()
         print(res)
         if res is None:
             retailer = Store(name=name, phone=phone, address=address, city=city, town=town,
