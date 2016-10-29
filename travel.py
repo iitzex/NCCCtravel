@@ -47,29 +47,25 @@ def traverse(addr, map_nccc, session):
         city, town, sub = detail(href)
 
         print(i+1, name, phone, city, town, address, main, sub)
-        retailer = Store(name=name, phone=phone, address=address, city=city, town=town,
-                         main=main, sub=sub)
 
-        latlon = locator(address)
-        if latlon is not None:
-            folium.Marker(location=latlon, popup=name).add_to(map_nccc)
-            map_nccc.location = latlon
-            map_nccc.save('nccc.html')
+        res = session.query(Store).filter_by(address=address).first()
+        print(res)
+        if res is None:
+            retailer = Store(name=name, phone=phone, address=address, city=city, town=town,
+                             main=main, sub=sub)
 
-            print('\t' + str(latlon))
+            latlon = locator(address)
+            if latlon is not None:
+                folium.Marker(location=latlon, popup=name).add_to(map_nccc)
+                map_nccc.location = latlon
+                map_nccc.save('nccc.html')
 
-            retailer.lat = latlon[0]
-            retailer.lon = latlon[1]
+                print('\t' + str(latlon))
 
-            res = session.query(Store).filter_by(name=name).all()
-            if res is None:
-                res.lat = latlon[0]
-                res.lon = latlon[1]
-                session.commit()
-                print('update latlon', res)
-                continue
+                retailer.lat = latlon[0]
+                retailer.lon = latlon[1]
 
-        session.add(retailer)
+            session.add(retailer)
     session.commit()
 
     next_a = table.previous_element.previous_element.previous_element
